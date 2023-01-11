@@ -3,17 +3,6 @@
 (require '[clojure.edn :as edn])
 
 ;;
-;; docs
-;;
-(comment
-  (require '[clojure.repl :as repl])
-  (repl/dir str)
-  (repl/doc str/split)
-  (repl/apropos "reduce")
-  (repl/find-doc "data structure")
-  ,)
-
-;;
 ;; add-libs
 ;;
 (comment
@@ -59,4 +48,15 @@
   (add-libs '{com.rpl/specter {:mvn/version "1.1.4"}})
   (require '[com.rpl.specter :refer :all])
  ,)
+
+;;
+;; docs
+;;
+(comment
+  (require '[clojure.repl :as repl])
+  (repl/dir str)
+  (repl/doc str/split)
+  (repl/apropos "reduce")
+  (repl/find-doc "data structure")
+  ,)
 

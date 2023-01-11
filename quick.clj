@@ -3,17 +3,6 @@
 (require '[clojure.edn :as edn])
 
 ;;
-;; docs
-;;
-(comment
-  (require '[clojure.repl :as repl])
-  (repl/dir str)
-  (repl/doc str/split)
-  (repl/apropos "reduce")
-  (repl/find-doc "data structure")
-  ,)
-
-;;
 ;; add-libs
 ;;
 (comment
@@ -40,3 +29,13 @@
   (require '[babashka.curl :as curl])
  ,)
 
+;;
+;; docs
+;;
+(comment
+  (require '[clojure.repl :as repl])
+  (repl/dir str)
+  (repl/doc str/split)
+  (repl/apropos "reduce")
+  (repl/find-doc "data structure")
+  ,)
