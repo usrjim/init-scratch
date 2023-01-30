@@ -1,0 +1,14 @@
+* ROOT
+:PROPERTIES:
+:header-args: :results output drawer :exports none
+:END:
+
+** CHILD
+:PROPERTIES:
+:header-args+: :dir __DIR__
+:END:
+
+#+BEGIN_SRC sh
+
+#+END_SRC
+
