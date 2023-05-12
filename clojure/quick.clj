@@ -3,6 +3,11 @@
 (require '[clojure.edn :as edn])
 
 ;;
+;; start repl: clojure -M:add-libs:repl/nrepl
+;;
+
+
+;;
 ;; add-libs
 ;;
 (comment
