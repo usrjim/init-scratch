@@ -29,9 +29,9 @@
   (add-libs '{babashka/fs {:mvn/version "0.2.12"}})
   (require '[babashka.fs :as fs])
 
-  ;;; curl, https://github.com/babashka/babashka.curl
-  (add-libs '{babashka/babashka.curl {:mvn/version "0.1.2"}})
-  (require '[babashka.curl :as curl])
+  ;;; http-client, https://github.com/babashka/http-client
+  (add-libs '{org.babashka/http-client {:mvn/version "0.3.11"}})
+  (require '[babashka.http-client :as http])
 
   ;;; match, https://github.com/clojure/core.match
   (add-libs '{org.clojure/core.match {:mvn/version "1.0.1"}})
@@ -41,7 +41,7 @@
   (add-libs '{org.clojure/core.async {:mvn/version "1.6.673"}})
   (require '[clojure.core.async :as async :refer :all])
 
-  ;;; chime, https://github.com/jarohen/chime 
+  ;;; chime, https://github.com/jarohen/chime
   (add-libs '{jarohen/chime {:mvn/version "0.3.3"}})
   (require '[chime.core :as chime])
 
