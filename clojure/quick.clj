@@ -29,9 +29,9 @@
   (add-libs '{babashka/fs {:mvn/version "0.2.12"}})
   (require '[babashka.fs :as fs])
 
-  ;;; http-client, https://github.com/babashka/http-client
-  (add-libs '{org.babashka/http-client {:mvn/version "0.3.11"}})
-  (require '[babashka.http-client :as http])
+  ;;; http-client, https://github.com/babashka/babashka.curl
+  (add-libs 'babashka/babashka.curl {:mvn/version "0.1.2"})
+  (require '[babashka.curl :as http])
  ,)
 
 ;;
