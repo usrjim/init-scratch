@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Infinite Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      body {
+        background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h10v10H0V0zm10 10h10v10H10V10z' fill='rgba(0,0,0,0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
+        background-color: #2c3e50;
+        cursor: grab;
+        user-select: none;
+      }
+
+      body.dragging {
+        cursor: grabbing;
+      }
+
+      .container {
+        width: 50px;
+        height: 50px;
+        background-color: #3498db;
+        cursor: move;
+        position: absolute;
+        user-select: none;
+        z-index: 1;
+      }
+
+      .add-button {
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        width: 40px;
+        height: 40px;
+        background-color: #27ae60;
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
+        border: none;
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      .add-button:hover {
+        background-color: #2ecc71;
+      }
+
+      .box {
+        width: 50px;
+        height: 50px;
+        cursor: move;
+        position: absolute;
+        user-select: none;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="add-button">+</button>
+    <div class="container box"></div>
+    <script>
+      class InfiniteBoard {
+        constructor() {
+          this.boxes = [document.querySelector(".container")];
+          this.body = document.body;
+          this.addButton = document.querySelector(".add-button");
+
+          this.state = {
+            isDragging: false,
+            isBackgroundDragging: false,
+            draggedBox: null,
+            bgX: 0,
+            bgY: 0,
+            boxAbsoluteX: 0,
+            boxAbsoluteY: 0,
+            initialX: 0,
+            initialY: 0,
+            startX: 0,
+            startY: 0,
+          };
+
+          this.handleMouseDown = this.handleMouseDown.bind(this);
+          this.handleMouseMove = this.handleMouseMove.bind(this);
+          this.handleMouseUp = this.handleMouseUp.bind(this);
+          this.handleAddBox = this.handleAddBox.bind(this);
+
+          this.init();
+        }
+
+        init() {
+          this.boxes.forEach((box) => {
+            box.addEventListener("mousedown", this.handleMouseDown);
+          });
+          this.body.addEventListener("mousedown", this.handleMouseDown);
+          document.addEventListener("mousemove", this.handleMouseMove);
+          document.addEventListener("mouseup", this.handleMouseUp);
+          this.addButton.addEventListener("click", this.handleAddBox);
+        }
+
+        handleMouseDown(e) {
+          const { state } = this;
+
+          if (e.target.classList.contains("box")) {
+            state.isDragging = true;
+            state.draggedBox = e.target;
+            const rect = state.draggedBox.getBoundingClientRect();
+            state.boxAbsoluteX = rect.left - state.bgX;
+            state.boxAbsoluteY = rect.top - state.bgY;
+            state.initialX = e.clientX - state.boxAbsoluteX;
+            state.initialY = e.clientY - state.boxAbsoluteY;
+            e.stopPropagation();
+          } else if (e.target === this.body) {
+            state.isBackgroundDragging = true;
+            this.body.classList.add("dragging");
+            state.startX = e.clientX - state.bgX;
+            state.startY = e.clientY - state.bgY;
+          }
+        }
+
+        updatePositions(e) {
+          const { state } = this;
+
+          if (state.isDragging && state.draggedBox) {
+            state.boxAbsoluteX = e.clientX - state.initialX;
+            state.boxAbsoluteY = e.clientY - state.initialY;
+
+            requestAnimationFrame(() => {
+              state.draggedBox.style.left = `${state.boxAbsoluteX + state.bgX}px`;
+              state.draggedBox.style.top = `${state.boxAbsoluteY + state.bgY}px`;
+            });
+          } else if (state.isBackgroundDragging) {
+            state.bgX = e.clientX - state.startX;
+            state.bgY = e.clientY - state.startY;
+
+            requestAnimationFrame(() => {
+              this.body.style.backgroundPosition = `${state.bgX}px ${state.bgY}px`;
+              this.boxes.forEach((box) => {
+                const boxRect = box.getBoundingClientRect();
+                box.style.left = `${boxRect.left + e.movementX}px`;
+                box.style.top = `${boxRect.top + e.movementY}px`;
+              });
+            });
+          }
+        }
+
+        handleMouseMove(e) {
+          if (this.state.isDragging || this.state.isBackgroundDragging) {
+            this.updatePositions(e);
+          }
+        }
+
+        handleMouseUp() {
+          this.state.isDragging = false;
+          this.state.isBackgroundDragging = false;
+          this.state.draggedBox = null;
+          this.body.classList.remove("dragging");
+        }
+
+        handleAddBox() {
+          const newBox = document.createElement("div");
+          newBox.className = "box";
+          newBox.style.backgroundColor = this.getRandomColor();
+          newBox.style.left = "50%";
+          newBox.style.top = "50%";
+          this.body.appendChild(newBox);
+          this.boxes.push(newBox);
+          newBox.addEventListener("mousedown", this.handleMouseDown);
+        }
+
+        getRandomColor() {
+          const letters = "0123456789ABCDEF";
+          let color = "#";
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+
+        destroy() {
+          this.boxes.forEach((box) => {
+            box.removeEventListener("mousedown", this.handleMouseDown);
+          });
+          this.body.removeEventListener("mousedown", this.handleMouseDown);
+          document.removeEventListener("mousemove", this.handleMouseMove);
+          document.removeEventListener("mouseup", this.handleMouseUp);
+          this.addButton.removeEventListener("click", this.handleAddBox);
+        }
+      }
+
+      // Initialize the board
+      const board = new InfiniteBoard();
+    </script>
+  </body>
+</html>
